@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
-import Comments from "../../../components/Comments";
 import { StyledLink } from "../../../components/StyledLink";
 import { StyledButton } from "../../../components/StyledButton";
 import { StyledImage } from "../../../components/StyledImage";
+import { Comments } from "@/lib/db_comments";
 
 const ImageContainer = styled.div`
   position: relative;
@@ -34,13 +34,18 @@ export default function DetailsPage() {
   const router = useRouter();
   const { isReady } = router;
   const { id } = router.query;
+  console.log("id:", id)
 
-  const { data: place, isLoading, error } = useSWR(`/api/places/${id}`);
+  const { data: place, isLoading, error } = useSWR(id?`/api/places/${id}`:null);
 
-  if (!isReady || isLoading || error) return <h2>Loading...</h2>;
+  if (!isReady || isLoading || error || !place) return <h2>Loading...</h2>;
 
   async function deletePlace() {
-    console.log("Deleting place ...");
+    await fetch(`/api/places/${id}`, {
+      method: "DELETE",
+    });
+    router.push("/");
+    return;
   }
 
   return (
@@ -72,6 +77,7 @@ export default function DetailsPage() {
           Delete
         </StyledButton>
       </ButtonContainer>
+      {/* <Comments locationName={place.name}/> */}
     </>
   );
 }

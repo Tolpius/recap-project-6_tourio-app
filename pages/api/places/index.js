@@ -1,6 +1,18 @@
-import { places } from "../../../lib/db";
+import Place from "@/db/models/Place";
+import dbConnect from "@/db/connect";
 
-export default function handler(request, response) {
-  response.status(200).json(places);
-  return;
+export default async function handler(request, response) {
+  await dbConnect();
+
+  if (request.method === "GET") {
+    const places = await Place.find();
+    response.status(200).json(places);
+    return;
+  }
+
+  if (request.method === "POST") {
+    await Place.create(request.body);
+    response.status(200).json({ status: "Created" });
+    return;
+  }
 }
