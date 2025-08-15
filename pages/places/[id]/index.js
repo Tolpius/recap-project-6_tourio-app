@@ -35,14 +35,44 @@ export default function DetailsPage() {
   const { isReady } = router;
   const { id } = router.query;
 
-  const { data: place, isLoading, error } = useSWR(`/api/places/${id}`);
+  const {
+    data: place,
+    isLoading,
+    error,
+  } = useSWR(id ? `/api/places/${id}` : null);
 
-  if (!isReady || isLoading || error) return <h2>Loading...</h2>;
+  if (!isReady || isLoading || error || !place?.image)
+    return <h2>Loading...</h2>;
 
   async function deletePlace() {
-    console.log("Deleting place ...");
-  }
+    if (!id) {
+      console.error("Place ID is required to delete");
+      return;
+    }
 
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this place?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`/api/places/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete place: ${response.statusText}`);
+      }
+
+      console.log("Place deleted successfully");
+      router.push("/"); // zurück zur Startseite
+    } catch (error) {
+      console.error("Error deleting place:", error);
+    }
+  }
+  if (!id) {
+    return <h2>Place ID is required</h2>;
+  }
   return (
     <>
       <StyledLink href={"/"} $justifySelf="start">
@@ -62,12 +92,12 @@ export default function DetailsPage() {
       <h2>
         {place.name}, {place.location}
       </h2>
-      <StyledLocationLink href={place.mapURL}>
+      <StyledLocationLink href={place.mapURL || "#"}>
         Location on Google Maps
       </StyledLocationLink>
       <p>{place.description}</p>
       <ButtonContainer>
-        <StyledLink href={`/places/${id}/edit`}>Edit</StyledLink>
+        <StyledLink href={id ? `/places/${id}/edit` : "#"}>Edit</StyledLink>
         <StyledButton onClick={deletePlace} type="button" $variant="delete">
           Delete
         </StyledButton>
