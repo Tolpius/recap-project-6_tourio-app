@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { StyledLink } from "../../../components/StyledLink";
 import { StyledButton } from "../../../components/StyledButton";
 import { StyledImage } from "../../../components/StyledImage";
-import { Comments } from "@/lib/db_comments";
 
 const ImageContainer = styled.div`
   position: relative;
@@ -36,9 +35,9 @@ export default function DetailsPage() {
   const { id } = router.query;
   console.log("id:", id)
 
-  const { data: place, isLoading, error } = useSWR(id?`/api/places/${id}`:null);
+  const { data: place, isLoading, error } = useSWR(`/api/places/${id}`);
 
-  if (!isReady || isLoading || error || !place) return <h2>Loading...</h2>;
+  if (!isReady || isLoading || error) return <h2>Loading...</h2>;
 
   async function deletePlace() {
     await fetch(`/api/places/${id}`, {

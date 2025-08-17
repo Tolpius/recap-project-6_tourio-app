@@ -20,6 +20,7 @@ export default function CreatePlacePage() {
     });
     if (response.ok) {
       await response.json();
+      console.log("add:", response);
       router.push("/");
     }
   }
