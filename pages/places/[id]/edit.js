@@ -18,7 +18,7 @@ export default function EditPage() {
 
     try {
       const response = await fetch(`/api/places/${place.id}`, {
-        method: "PUT", // oder PATCH, je nach API
+        method: "PUT", 
         headers: {
           "Content-Type": "application/json",
         },

@@ -65,7 +65,7 @@ export default function DetailsPage() {
       }
 
       console.log("Place deleted successfully");
-      router.push("/"); // zurück zur Startseite
+      router.push("/"); 
     } catch (error) {
       console.error("Error deleting place:", error);
     }
