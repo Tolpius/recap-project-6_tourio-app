@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/dbConnect"; // Stelle sicher, dass du eine DB-Verbindung hast
+import dbConnect from "@/lib/dbConnect"; 
 import Place from "@/models/Place";
 
 export default async function handler(req, res) {
